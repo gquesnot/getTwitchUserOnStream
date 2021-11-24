@@ -36,8 +36,6 @@ async function getTwitchChatUsersByStream(streamStr){
     }
     return []
 
-
-
 }
 
 var start = new Date().getTime();
