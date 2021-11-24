@@ -1,5 +1,7 @@
 const puppeteer = require("puppeteer");
 
+var result = []
+
 async function getTwitchChatUsersByStream(streamStr){
     const browser = await puppeteer.launch({
         headless: true,
@@ -11,7 +13,7 @@ async function getTwitchChatUsersByStream(streamStr){
         if (response.url() === "https://gql.twitch.tv/gql" && response.request().initiator().type !== "preflight"){
             response.text().then(function (text){
                 if (text.includes("moderators")){
-                    return JSON.parse(text)
+                    result =  JSON.parse(text)
                 }
             })
         }
@@ -29,7 +31,7 @@ async function getTwitchChatUsersByStream(streamStr){
     let btn = await page.$("button[data-test-selector='chat-viewer-list']")
     if (btn){
         await btn.click();
-        // await page.waitForSelector("div.chat-viewers-list>div:nth-child(2)");
+        await page.waitForSelector("div.chat-viewers-list>div:nth-child(2)");
         // return await page.evaluate(() =>
         //     Array.from(document.querySelectorAll("div.chat-viewers-list>div:nth-child(2) button")).map(d => d.getAttribute("data-username"))
         // )
@@ -41,7 +43,7 @@ async function getTwitchChatUsersByStream(streamStr){
 var start = new Date().getTime();
 getTwitchChatUsersByStream("wardiii")
     .then(r => {
-        console.log(r.length)
+        console.log(result.data.channel.chatters.viewers ,result.data.channel.chatters.viewers.length)
         var end = new Date().getTime();
         var time = end - start;
         console.log('Execution time: ' + time);
